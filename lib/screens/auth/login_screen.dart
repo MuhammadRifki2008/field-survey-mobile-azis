@@ -14,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   // CONTROLLER
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -23,6 +22,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isLoading = false;
   bool obscurePassword = true;
+
+  String? emailError;
+  String? passwordError;
 
   // WARNA
 
@@ -63,9 +65,17 @@ class _LoginScreenState extends State<LoginScreen> {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    // VALIDASI
     if (email.isEmpty || password.isEmpty) {
       showMessage('Email dan password harus diisi.');
+      return;
+    }
+
+    setState(() {
+      emailError = email.isEmpty ? 'Email wajib diisi.' : null;
+      passwordError = password.isEmpty ? 'Password wajib diisi.' : null;
+    });
+
+    if (emailError != null || passwordError != null) {
       return;
     }
 
@@ -74,7 +84,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-
       // REQUEST LOGIN
 
       final response = await http.post(
@@ -193,7 +202,6 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.fromLTRB(24, 30, 24, 30),
               child: Column(
                 children: [
-                  
                   // logo
                   Container(
                     width: 85,
@@ -291,11 +299,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         TextField(
                           controller: emailController,
+                          onChanged: (value) {
+                            if (emailError != null) {
+                              setState(() {
+                                emailError = null;
+                              });
+                            }
+                          },
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                           enabled: !isLoading,
                           decoration: InputDecoration(
                             hintText: 'Masukkan email kamu',
+                            errorText: emailError,
                             prefixIcon: const Icon(
                               Icons.email_outlined,
                               color: primaryColor,
@@ -343,6 +359,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         TextField(
                           controller: passwordController,
+                          onChanged: (value) {
+                            if (passwordError != null) {
+                              setState(() {
+                                passwordError = null;
+                              });
+                            }
+                          },
                           obscureText: obscurePassword,
                           enabled: !isLoading,
                           textInputAction: TextInputAction.done,
@@ -353,6 +376,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           decoration: InputDecoration(
                             hintText: 'Masukkan password',
+                            errorText: passwordError,
                             prefixIcon: const Icon(
                               Icons.lock_outline,
                               color: primaryColor,

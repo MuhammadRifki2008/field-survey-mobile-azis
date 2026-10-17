@@ -365,59 +365,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
     // DATA KOSONG
     // ==========================================================
 
-    if (surveys.isEmpty) {
-      return ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.7,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.folder_open_rounded,
-                    size: 70,
-                    color: Color(0xFF94A3B8),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  const Text(
-                    'Belum Ada Data Survey',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  const Text(
-                    'Tekan tombol di bawah untuk menambah survey.',
-                    style: TextStyle(color: Color(0xFF64748B)),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  ElevatedButton.icon(
-                    onPressed: openAddSurvey,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
-                    ),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Tambah Survey'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
     // ==========================================================
     // LIST SURVEY
     // ==========================================================

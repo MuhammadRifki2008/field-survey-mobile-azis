@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:field_survey/screens/auth/login_screen.dart';
 import 'package:http/http.dart' as http;
@@ -82,6 +83,12 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
 
   bool isSubmitting = false;
 
+  
+  bool isLoadingLocation = false;
+  bool isMapReady = false;
+
+  final MapController mapController = MapController();
+
   bool get isEdit => widget.survey != null;
 
   LatLng? get selectedLocation {
@@ -112,8 +119,11 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
     super.initState();
 
     fillSurveyData();
-
     fetchCategories();
+
+    if (!isEdit) {
+      getCurrentLocation();
+    }
   }
 
   // ============================================================
@@ -141,6 +151,72 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
         photoName != 'null' &&
         photoName != 'placeholder.jpg') {
       fetchExistingImage(photoName);
+    }
+  }
+
+  // ============================================================
+  // AMBIL LOKASI GPS SAAT INI
+  // ============================================================
+
+  Future<void> getCurrentLocation() async {
+    if (isLoadingLocation) return;
+
+    setState(() {
+      isLoadingLocation = true;
+    });
+
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+      if (!serviceEnabled) {
+        throw Exception('Aktifkan GPS/lokasi di HP terlebih dahulu.');
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied) {
+        throw Exception('Izin lokasi belum diberikan.');
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception(
+          'Izin lokasi ditolak permanen. Aktifkan dari Pengaturan aplikasi.',
+        );
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 20),
+        ),
+      );
+
+      if (!mounted) return;
+
+      final location = LatLng(position.latitude, position.longitude);
+
+      setState(() {
+        latitudeController.text = position.latitude.toStringAsFixed(6);
+        longitudeController.text = position.longitude.toStringAsFixed(6);
+      });
+
+      if (isMapReady) {
+        mapController.move(location, 10);
+      }
+    } catch (e) {
+      if (mounted) {
+        showErrorSnackBar(e.toString().replaceFirst('Exception: ', ''));
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoadingLocation = false;
+        });
+      }
     }
   }
 
@@ -1089,6 +1165,32 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
               style: TextStyle(fontSize: 13, color: subtitleColor),
             ),
 
+            const SizedBox(height: 14),
+
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: isLoadingLocation ? null : getCurrentLocation,
+                icon: isLoadingLocation
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.my_location),
+                label: Text(
+                  isLoadingLocation
+                      ? 'Mengambil lokasi...'
+                      : 'Gunakan Lokasi Saya',
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: primaryColor,
+                  side: const BorderSide(color: primaryColor),
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                ),
+              ),
+            ),
+
             const SizedBox(height: 18),
 
             ClipRRect(
@@ -1096,9 +1198,17 @@ class _SurveyFormPageState extends State<SurveyFormPage> {
               child: SizedBox(
                 height: 280,
                 child: FlutterMap(
+                  mapController: mapController,
                   options: MapOptions(
                     initialCenter: initialMapCenter,
                     initialZoom: 14,
+                    onMapReady: () {
+                      isMapReady = true;
+                      final location = selectedLocation;
+                      if (location != null) {
+                        mapController.move(location, isEdit ? 14 : 16);
+                      }
+                    },
                     onTap: (tapPosition, point) {
                       setState(() {
                         latitudeController.text = point.latitude

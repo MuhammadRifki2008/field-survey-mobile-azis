@@ -4,15 +4,32 @@ import 'package:http/http.dart' as http;
 import 'package:field_survey/screens/survey/survey_screen.dart';
 import 'package:field_survey/screens/profile/profile_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final String token;
 
   const HomeScreen({super.key, required this.token});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   static const Color primaryColor = Color(0xFF1E4BAF);
   static const Color backgroundColor = Color(0xFFF8FAFC);
   static const Color textDark = Color(0xFF0F172A);
   static const Color textGrey = Color(0xFF64748B);
+
+  final GlobalKey<_DashboardStatsState> _statsKey =
+      GlobalKey<_DashboardStatsState>();
+  final GlobalKey<_LatestSurveysState> _latestSurveysKey =
+      GlobalKey<_LatestSurveysState>();
+
+  Future<void> _refreshDashboard() async {
+    await Future.wait([
+      _statsKey.currentState?.refresh() ?? Future<void>.value(),
+      _latestSurveysKey.currentState?.refresh() ?? Future<void>.value(),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +51,11 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
+          IconButton(
+            tooltip: 'Refresh dashboard',
+            onPressed: _refreshDashboard,
+            icon: const Icon(Icons.refresh_rounded),
+          ),
           Container(
             margin: const EdgeInsets.only(right: 12),
             decoration: BoxDecoration(
@@ -58,9 +80,12 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 25),
-        child: Column(
+      body: RefreshIndicator(
+        onRefresh: _refreshDashboard,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 25),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
@@ -154,7 +179,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            DashboardStats(token: token),
+            DashboardStats(key: _statsKey, token: widget.token),
             const SizedBox(height: 28),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -181,8 +206,9 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            LatestSurveys(token: token),
+            LatestSurveys(key: _latestSurveysKey, token: widget.token),
           ],
+          ),
         ),
       ),
       bottomNavigationBar: Container(
@@ -208,7 +234,7 @@ class HomeScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProfileScreen(token: token),
+                  builder: (context) => ProfileScreen(token: widget.token),
                 ),
               );
             }
@@ -255,6 +281,15 @@ class _DashboardStatsState extends State<DashboardStats> {
   void initState() {
     super.initState();
     ambilData();
+  }
+
+  Future<void> refresh() async {
+    if (!mounted) return;
+    setState(() {
+      loading = true;
+      error = null;
+    });
+    await ambilData();
   }
 
   Future<void> ambilData() async {
@@ -461,6 +496,15 @@ class _LatestSurveysState extends State<LatestSurveys> {
   void initState() {
     super.initState();
     ambilSurvey();
+  }
+
+  Future<void> refresh() async {
+    if (!mounted) return;
+    setState(() {
+      loading = true;
+      error = null;
+    });
+    await ambilSurvey();
   }
 
   Future<void> ambilSurvey() async {

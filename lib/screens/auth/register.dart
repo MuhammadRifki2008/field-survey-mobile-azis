@@ -22,6 +22,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool isLoading = false;
 
+  String? namaError;
+  String? jkError;
+  String? emailError;
+  String? hpError;
+
   // WARNA APLIKASI
   static const Color primaryColor = Color(0xFF1E4BAF);
   static const Color backgroundColor = Color(0xFFF8FAFC);
@@ -62,28 +67,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final phone = phoneController.text.trim();
 
     // VALIDASI
-    if (name.isEmpty) {
-      showMessage('Nama harus diisi.', isError: true);
-      return;
-    }
+    // if (name.isEmpty) {
+    //   showMessage('Nama harus diisi.', isError: true);
+    //   return;
+    // }
 
-    if (selectedGender == null) {
-      showMessage('Jenis kelamin harus dipilih.', isError: true);
-      return;
-    }
+    // if (selectedGender == null) {
+    //   showMessage('Jenis kelamin harus dipilih.', isError: true);
+    //   return;
+    // }
 
-    if (email.isEmpty) {
-      showMessage('Email harus diisi.', isError: true);
-      return;
-    }
+    // if (email.isEmpty) {
+    //   showMessage('Email harus diisi.', isError: true);
+    //   return;
+    // }
 
-    if (!email.contains('@')) {
-      showMessage('Format email tidak valid.', isError: true);
-      return;
-    }
+    // if (!email.contains('@')) {
+    //   showMessage('Format email tidak valid.', isError: true);
+    //   return;
+    // }
 
-    if (phone.isEmpty) {
-      showMessage('Nomor telepon harus diisi.', isError: true);
+    // if (phone.isEmpty) {
+    //   showMessage('Nomor telepon harus diisi.', isError: true);
+    //   return;
+    // }
+
+    setState(() {
+      namaError = name.isEmpty ? 'Nama wajib diisi.' : null;
+      jkError = selectedGender == null 
+        ? 'Jenis kelamin wajib dipilih'
+        : null;
+      emailError = email.isEmpty ? 'Email wajib diisi.' : null;
+      hpError = phone.isEmpty ? 'Nomer telepon harus diisi' : null;
+    });
+
+    if(namaError != null || jkError !=null || emailError != null || hpError != null){
       return;
     }
 
@@ -187,20 +205,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   InputDecoration inputDecoration({
     required String hintText,
     required IconData icon,
+    String? errorText,
   }) {
     return InputDecoration(
       hintText: hintText,
-
+      errorText: errorText,
       hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
-
       prefixIcon: Icon(icon, color: primaryColor),
-
       filled: true,
-
       fillColor: Colors.white,
-
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(color: borderColor),
@@ -333,12 +347,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     TextField(
                       controller: nameController,
-
+                      onChanged: (value) {
+                        if(namaError != null) {
+                          setState(() {
+                            namaError = null;
+                          });
+                        }
+                      },
                       textInputAction: TextInputAction.next,
-
                       decoration: inputDecoration(
                         hintText: 'Masukkan nama lengkap',
                         icon: Icons.person_outline,
+                        errorText: namaError,
                       ),
                     ),
 
@@ -366,6 +386,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       decoration: inputDecoration(
                         hintText: 'Pilih jenis kelamin',
                         icon: Icons.wc_outlined,
+                        errorText: jkError
                       ),
 
                       items: const [
@@ -385,6 +406,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           : (value) {
                               setState(() {
                                 selectedGender = value;
+                                jkError = null;
                               });
                             },
                     ),
@@ -407,14 +429,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     TextField(
                       controller: emailController,
-
+                      onChanged: (value) {
+                        if(emailError != null) {
+                          setState(() {
+                            emailError = null;
+                          });
+                        }
+                      },
                       keyboardType: TextInputType.emailAddress,
-
                       textInputAction: TextInputAction.next,
-
                       decoration: inputDecoration(
                         hintText: 'Masukkan alamat email',
                         icon: Icons.email_outlined,
+                        errorText: emailError,
                       ),
                     ),
 
@@ -436,11 +463,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     TextField(
                       controller: phoneController,
-
+                      onChanged: (value) {
+                        if(hpError != null) {
+                          setState(() {
+                            hpError = null;
+                          });
+                        }
+                      },
                       keyboardType: TextInputType.phone,
-
                       textInputAction: TextInputAction.done,
-
                       onSubmitted: (_) {
                         if (!isLoading) {
                           register();
@@ -450,6 +481,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       decoration: inputDecoration(
                         hintText: 'Contoh: 081234567890',
                         icon: Icons.phone_outlined,
+                        errorText: hpError,
                       ),
                     ),
                   ],

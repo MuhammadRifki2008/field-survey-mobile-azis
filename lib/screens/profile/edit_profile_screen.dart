@@ -26,7 +26,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   static const String imageUrl = 'https://sijala.biz.id/api/image';
 
-  // ============================================================
   // CONTROLLER
 
   final TextEditingController nameController = TextEditingController();
