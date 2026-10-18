@@ -16,8 +16,6 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-
-  // API
   static const String baseUrl = 'https://sijala.biz.id/api/v1';
 
   static const String profileUrl = '$baseUrl/profile';
@@ -25,8 +23,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   static const String updateUrl = '$baseUrl/profile/update';
 
   static const String imageUrl = 'https://sijala.biz.id/api/image';
-
-  // CONTROLLER
 
   final TextEditingController nameController = TextEditingController();
 
@@ -40,8 +36,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   final TextEditingController birthDateController = TextEditingController();
 
-  // STATE
-
   String gender = '';
 
   String photo = '';
@@ -54,16 +48,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   final ImagePicker picker = ImagePicker();
 
-  // INIT
-
   @override
   void initState() {
     super.initState();
 
     getProfile();
   }
-
-  // DISPOSE
 
   @override
   void dispose() {
@@ -77,8 +67,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.dispose();
   }
 
-  // TOKEN
-
   Future<String> getToken() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -90,8 +78,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     return widget.token;
   }
-
-  // AMBIL NILAI DARI MAP
 
   String getValue(Map<String, dynamic> data, List<String> keys) {
     for (final key in keys) {
@@ -106,8 +92,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     return '';
   }
-
-  // FORMAT TANGGAL
 
   String formatBirthDate(String value) {
     if (value.isEmpty || value == 'null') {
@@ -124,8 +108,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     return value;
   }
-
-  // NORMALISASI GENDER
 
   String normalizeGender(String value) {
     final genderValue = value.trim().toUpperCase();
@@ -147,8 +129,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     return '';
   }
-
-  // GET PROFILE
 
   Future<void> getProfile() async {
     try {
@@ -269,7 +249,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       debugPrint('======================================');
       debugPrint('FORM BERHASIL DIISI');
-      debugPrint('NAMA       : $name');
+      debugPrint('NAMA      : $name');
       debugPrint('USERNAME   : $username');
       debugPrint('EMAIL      : $email');
       debugPrint('PHONE      : $phone');
@@ -290,8 +270,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       showMessage(e.toString().replaceFirst('Exception: ', ''), Colors.red);
     }
   }
-
-  // PICK IMAGE
 
   Future<void> pickImage() async {
     try {
@@ -315,8 +293,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       showMessage('Gagal memilih foto: $e', Colors.red);
     }
   }
-
-  // DATE PICKER
 
   Future<void> pickBirthDate() async {
     DateTime initialDate = DateTime(2000, 1, 1);
@@ -353,8 +329,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       birthDateController.text = date;
     });
   }
-
-  // UPDATE PROFILE
 
   Future<void> updateProfile() async {
     if (nameController.text.trim().isEmpty) {
@@ -482,10 +456,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  // ============================================================
-  // GET OLD PHOTO
-  // ============================================================
-
   Future<Uint8List?> getOldPhoto() async {
     if (photo.isEmpty || photo == 'null') {
       return null;
@@ -512,10 +482,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       return null;
     }
   }
-
-  // ============================================================
-  // PHOTO WIDGET
-  // ============================================================
 
   Widget photoWidget() {
     if (selectedImage != null) {
@@ -575,10 +541,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  // ============================================================
-  // INPUT FIELD
-  // ============================================================
-
   Widget inputField({
     required String label,
     required TextEditingController controller,
@@ -620,10 +582,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  // ============================================================
-  // GENDER
-  // ============================================================
-
   Widget genderDropdown() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
@@ -662,10 +620,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  // ============================================================
-  // MESSAGE
-  // ============================================================
-
   void showMessage(String message, Color color) {
     if (!mounted) return;
 
@@ -673,10 +627,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       context,
     ).showSnackBar(SnackBar(content: Text(message), backgroundColor: color));
   }
-
-  // ============================================================
-  // CARD DECORATION
-  // ============================================================
 
   BoxDecoration cardDecoration() {
     return BoxDecoration(
@@ -692,35 +642,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  // ============================================================
-  // BUILD
-  // ============================================================
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
-
-      // ========================================================
-      // APP BAR
-      // ========================================================
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 4, 54, 139),
         elevation: 0,
         centerTitle: true,
         title: const Text(
           'Edit Profil',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-
-      // ========================================================
-      // BODY
-      // ========================================================
       body: isLoading
           ? const Center(
               child: CircularProgressIndicator(color: Color(0xFF1E4BAF)),
@@ -729,9 +664,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 30),
               child: Column(
                 children: [
-                  // ==================================================
-                  // FOTO PROFILE
-                  // ==================================================
                   Column(
                     children: [
                       photoWidget(),
@@ -757,9 +689,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                   const SizedBox(height: 18),
 
-                  // ==================================================
-                  // DATA DIRI
-                  // ==================================================
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(18),
@@ -861,9 +790,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                         const SizedBox(height: 8),
 
-                        // ==================================================
-                        // SIMPAN
-                        // ==================================================
                         SizedBox(
                           width: double.infinity,
                           height: 52,

@@ -18,19 +18,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // ========================================================
-  // API
-  // ========================================================
-
   static const String baseUrl = 'https://sijala.biz.id/api/v1';
 
   static const String profileEndpoint = '$baseUrl/profile';
 
   static const String imageEndpoint = 'https://sijala.biz.id/api/image';
-
-  // ========================================================
-  // STATE
-  // ========================================================
 
   Map<String, dynamic>? profile;
 
@@ -38,20 +30,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   bool isLoading = true;
 
-  // ========================================================
-  // INIT
-  // ========================================================
-
   @override
   void initState() {
     super.initState();
 
     getProfile();
   }
-
-  // ========================================================
-  // GET PROFILE
-  // ========================================================
 
   Future<void> getProfile() async {
     try {
@@ -134,10 +118,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // ========================================================
-  // GET PROFILE IMAGE
-  // ========================================================
-
   Future<Uint8List?> fetchProfileImage(String fileName) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -183,10 +163,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return null;
     }
   }
-
-  // ========================================================
-  // LOGOUT
-  // ========================================================
 
   Future<void> logout() async {
     final result = await showDialog<bool>(
@@ -287,17 +263,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // ========================================================
-  // REFRESH
-  // ========================================================
-
   Future<void> handleRefresh() async {
     await getProfile();
   }
-
-  // ========================================================
-  // PROFILE HEADER
-  // ========================================================
 
   Widget profileHeader() {
     if (profile == null) {
@@ -312,7 +280,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Column(
       children: [
-        // FOTO PROFILE
         CircleAvatar(
           radius: 50,
           backgroundColor: const Color(0xFFE8F0FF),
@@ -370,9 +337,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
-  // ========================================================
-  // INFO ITEM
-  // ========================================================
 
   Widget infoItem({
     required IconData icon,
@@ -427,10 +391,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
-  // ========================================================
-  // INFORMATION CARD
-  // ========================================================
 
   Widget informationCard() {
     if (profile == null) {
@@ -515,10 +475,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ========================================================
-  // EDIT BUTTON
-  // ========================================================
-
   Widget editButton() {
     return SizedBox(
       width: double.infinity,
@@ -555,10 +511,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ========================================================
-  // LOGOUT BUTTON
-  // ========================================================
-
   Widget logoutButton() {
     return SizedBox(
       width: double.infinity,
@@ -581,15 +533,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ========================================================
-  // BUILD
-  // ========================================================
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
-
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 4, 54, 139),
         elevation: 0,
@@ -603,17 +550,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: handleRefresh,
           color: const Color(0xFF1E4BAF),
-
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 30),
-
             child: Column(
               children: [
                 if (isLoading)

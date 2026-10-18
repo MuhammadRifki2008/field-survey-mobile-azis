@@ -12,8 +12,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-
-  // CONTROLLER
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
@@ -27,7 +25,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? emailError;
   String? hpError;
 
-  // WARNA APLIKASI
   static const Color primaryColor = Color(0xFF1E4BAF);
   static const Color backgroundColor = Color(0xFFF8FAFC);
   static const Color textColor = Color(0xFF0F172A);
@@ -35,7 +32,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   static const Color softBlueColor = Color(0xFFEFF6FF);
   static const Color borderColor = Color(0xFFE2E8F0);
 
-  // DISPOSE
   @override
   void dispose() {
     nameController.dispose();
@@ -45,7 +41,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  // SHOW MESSAGE
   void showMessage(String message, {bool isError = false}) {
     if (!mounted) return;
 
@@ -60,52 +55,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // REGISTER
   Future<void> register() async {
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final phone = phoneController.text.trim();
 
-    // VALIDASI
-    // if (name.isEmpty) {
-    //   showMessage('Nama harus diisi.', isError: true);
-    //   return;
-    // }
-
-    // if (selectedGender == null) {
-    //   showMessage('Jenis kelamin harus dipilih.', isError: true);
-    //   return;
-    // }
-
-    // if (email.isEmpty) {
-    //   showMessage('Email harus diisi.', isError: true);
-    //   return;
-    // }
-
-    // if (!email.contains('@')) {
-    //   showMessage('Format email tidak valid.', isError: true);
-    //   return;
-    // }
-
-    // if (phone.isEmpty) {
-    //   showMessage('Nomor telepon harus diisi.', isError: true);
-    //   return;
-    // }
-
     setState(() {
       namaError = name.isEmpty ? 'Nama wajib diisi.' : null;
-      jkError = selectedGender == null 
-        ? 'Jenis kelamin wajib dipilih'
-        : null;
+      jkError = selectedGender == null ? 'Jenis kelamin wajib dipilih' : null;
       emailError = email.isEmpty ? 'Email wajib diisi.' : null;
       hpError = phone.isEmpty ? 'Nomer telepon harus diisi' : null;
     });
 
-    if(namaError != null || jkError !=null || emailError != null || hpError != null){
+    if (namaError != null ||
+        jkError != null ||
+        emailError != null ||
+        hpError != null) {
       return;
     }
 
-    // LOADING
     setState(() {
       isLoading = true;
     });
@@ -141,7 +109,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         data = {};
       }
 
-      // REGISTER BERHASIL
       if (response.statusCode == 200 || response.statusCode == 201) {
         showMessage(
           data is Map
@@ -162,13 +129,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return;
       }
 
-      // REGISTER GAGAL
       String message = 'Registrasi gagal. Silakan coba lagi.';
 
       if (data is Map) {
         message = data['message']?.toString() ?? message;
 
-        // Mengambil error validasi dari API
         if (data['errors'] is Map) {
           final errors = data['errors'] as Map;
 
@@ -201,7 +166,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  // INPUT DECORATION
   InputDecoration inputDecoration({
     required String hintText,
     required IconData icon,
@@ -219,12 +183,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(color: borderColor),
       ),
-
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(color: borderColor),
       ),
-
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(color: primaryColor, width: 1.5),
@@ -232,50 +194,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // BUILD
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-
       appBar: AppBar(
         backgroundColor: backgroundColor,
         foregroundColor: textColor,
         elevation: 0,
         centerTitle: false,
-
         title: const Text(
           'Buat Akun',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-
       body: SafeArea(
         top: false,
-
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
-
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
               const SizedBox(height: 10),
 
-              // ==================================================
-              // HEADER
-              // ==================================================
               Center(
                 child: Container(
                   width: 85,
                   height: 85,
-
                   decoration: BoxDecoration(
                     color: softBlueColor,
-
                     borderRadius: BorderRadius.circular(24),
                   ),
-
                   child: const Icon(
                     Icons.person_add_alt_1_rounded,
                     size: 45,
@@ -313,27 +262,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               const SizedBox(height: 32),
 
-              // ==================================================
-              // FORM CARD
-              // ==================================================
               Container(
                 padding: const EdgeInsets.all(18),
-
                 decoration: BoxDecoration(
                   color: Colors.white,
-
                   borderRadius: BorderRadius.circular(18),
-
                   border: Border.all(color: borderColor),
                 ),
-
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-
                   children: [
-                    // ============================================
-                    // NAMA
-                    // ============================================
                     const Text(
                       'Nama Lengkap',
                       style: TextStyle(
@@ -348,7 +286,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextField(
                       controller: nameController,
                       onChanged: (value) {
-                        if(namaError != null) {
+                        if (namaError != null) {
                           setState(() {
                             namaError = null;
                           });
@@ -364,9 +302,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 20),
 
-                    // ============================================
-                    // GENDER
-                    // ============================================
                     const Text(
                       'Jenis Kelamin',
                       style: TextStyle(
@@ -380,27 +315,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     DropdownButtonFormField<String>(
                       value: selectedGender,
-
                       isExpanded: true,
-
                       decoration: inputDecoration(
                         hintText: 'Pilih jenis kelamin',
                         icon: Icons.wc_outlined,
-                        errorText: jkError
+                        errorText: jkError,
                       ),
-
                       items: const [
                         DropdownMenuItem<String>(
                           value: 'L',
                           child: Text('Laki-Laki'),
                         ),
-
                         DropdownMenuItem<String>(
                           value: 'P',
                           child: Text('Perempuan'),
                         ),
                       ],
-
                       onChanged: isLoading
                           ? null
                           : (value) {
@@ -413,9 +343,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 20),
 
-                    // ============================================
-                    // EMAIL
-                    // ============================================
                     const Text(
                       'Email',
                       style: TextStyle(
@@ -430,7 +357,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextField(
                       controller: emailController,
                       onChanged: (value) {
-                        if(emailError != null) {
+                        if (emailError != null) {
                           setState(() {
                             emailError = null;
                           });
@@ -447,9 +374,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 20),
 
-                    // ============================================
-                    // TELEPON
-                    // ============================================
                     const Text(
                       'Nomor Telepon',
                       style: TextStyle(
@@ -464,7 +388,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextField(
                       controller: phoneController,
                       onChanged: (value) {
-                        if(hpError != null) {
+                        if (hpError != null) {
                           setState(() {
                             hpError = null;
                           });
@@ -477,7 +401,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           register();
                         }
                       },
-
                       decoration: inputDecoration(
                         hintText: 'Contoh: 081234567890',
                         icon: Icons.phone_outlined,
@@ -490,35 +413,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               const SizedBox(height: 24),
 
-              // ==================================================
-              // BUTTON REGISTER
-              // ==================================================
               SizedBox(
                 width: double.infinity,
                 height: 54,
-
                 child: ElevatedButton(
                   onPressed: isLoading ? null : register,
-
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
-
                     foregroundColor: Colors.white,
-
                     disabledBackgroundColor: const Color(0xFF93B4E8),
-
                     elevation: 0,
-
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-
                   child: isLoading
                       ? const SizedBox(
                           width: 24,
                           height: 24,
-
                           child: CircularProgressIndicator(
                             color: Colors.white,
                             strokeWidth: 2.5,
@@ -526,12 +438,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         )
                       : const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-
                           children: [
                             Icon(Icons.person_add_alt_1),
-
                             SizedBox(width: 10),
-
                             Text(
                               'Daftar Sekarang',
                               style: TextStyle(
@@ -546,17 +455,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               const SizedBox(height: 18),
 
-              // LOGIN
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-
                   children: [
                     const Text(
                       'Sudah punya akun?',
                       style: TextStyle(color: secondaryTextColor),
                     ),
-
                     TextButton(
                       onPressed: isLoading
                           ? null
@@ -568,7 +474,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               );
                             },
-
                       child: const Text(
                         'Login',
                         style: TextStyle(

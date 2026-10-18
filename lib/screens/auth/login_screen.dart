@@ -14,11 +14,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // CONTROLLER
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
-  // STATE
 
   bool isLoading = false;
   bool obscurePassword = true;
@@ -26,13 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
   String? emailError;
   String? passwordError;
 
-  // WARNA
-
   static const Color primaryColor = Color(0xFF1E4BAF);
   static const Color secondaryColor = Color(0xFF2563EB);
   static const Color backgroundColor = Color(0xFFF8FAFC);
-
-  // DISPOSE
 
   @override
   void dispose() {
@@ -40,8 +33,6 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
     super.dispose();
   }
-
-  // SHOW MESSAGE
 
   void showMessage(String message, {bool isError = true}) {
     if (!mounted) return;
@@ -58,8 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  // LOGIN
 
   Future<void> login() async {
     final email = emailController.text.trim();
@@ -84,8 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      // REQUEST LOGIN
-
       final response = await http.post(
         Uri.parse('https://sijala.biz.id/api/v1/login'),
         headers: {'Accept': 'application/json'},
@@ -97,10 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
       debugPrint('LOGIN RESPONSE: ${response.body}');
       debugPrint('================================');
 
-      // Decode response
       final dynamic data = jsonDecode(response.body);
-
-      // LOGIN BERHASIL
 
       if (response.statusCode == 200 && data is Map && data['status'] == true) {
         final token = data['data']?['token'];
@@ -109,22 +93,15 @@ class _LoginScreenState extends State<LoginScreen> {
           throw Exception('Token tidak ditemukan dari server.');
         }
 
-        // SIMPAN TOKEN
-
         final prefs = await SharedPreferences.getInstance();
 
         await prefs.setString('token', token.toString());
 
-        // Opsional: simpan data user
         if (data['data']?['user'] != null) {
           await prefs.setString('user', jsonEncode(data['data']['user']));
         }
 
         if (!mounted) return;
-
-        // ======================================================
-        // MASUK KE HOME
-        // ======================================================
 
         Navigator.pushAndRemoveUntil(
           context,
@@ -137,10 +114,6 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      // ========================================================
-      // LOGIN GAGAL
-      // ========================================================
-
       String message = 'Email atau password salah.';
 
       if (data is Map && data['message'] != null) {
@@ -148,21 +121,13 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       showMessage(message);
-    }
-    // ==========================================================
-    // ERROR
-    // ==========================================================
-    catch (e) {
+    } catch (e) {
       debugPrint('LOGIN ERROR: $e');
 
       if (!mounted) return;
 
       showMessage(e.toString().replaceFirst('Exception: ', ''));
-    }
-    // ==========================================================
-    // STOP LOADING
-    // ==========================================================
-    finally {
+    } finally {
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -171,10 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // ============================================================
-  // BUILD
-  // ============================================================
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,9 +143,6 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            // ==================================================
-            // BACKGROUND BIRU BAGIAN ATAS
-            // ==================================================
             Container(
               height: MediaQuery.of(context).size.height * 0.34,
               width: double.infinity,
@@ -197,12 +155,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
 
-            // content
             SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(24, 30, 24, 30),
               child: Column(
                 children: [
-                  // logo
                   Container(
                     width: 85,
                     height: 85,
@@ -226,7 +182,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 20),
 
-                  // title
                   const Text(
                     'Field Survey',
                     style: TextStyle(
@@ -245,7 +200,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 45),
 
-                  // login card
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(24),
@@ -263,7 +217,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // TITLE FORM
                         const Text(
                           'Selamat Datang ',
                           style: TextStyle(
@@ -285,7 +238,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         const SizedBox(height: 30),
 
-                        // email
                         const Text(
                           'Email',
                           style: TextStyle(
@@ -345,7 +297,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         const SizedBox(height: 20),
 
-                        // password
                         const Text(
                           'Password',
                           style: TextStyle(
@@ -425,7 +376,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         const SizedBox(height: 30),
 
-                        // button login
                         SizedBox(
                           width: double.infinity,
                           height: 55,
@@ -471,7 +421,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 25),
 
-                  // Register
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
