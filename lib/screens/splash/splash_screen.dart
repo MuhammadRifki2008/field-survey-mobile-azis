@@ -12,10 +12,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // ============================================================
-  // WARNA APLIKASI
-  // ============================================================
-
   static const Color primaryColor = Color(0xFF1E4BAF);
   static const Color backgroundColor = Color(0xFFF8FAFC);
   static const Color textColor = Color(0xFF0F172A);
@@ -28,12 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     checkSession();
   }
 
-  // ============================================================
-  // CEK SESSION LOGIN
-  // ============================================================
-
   Future<void> checkSession() async {
-    // Tunggu agar splash screen terlihat
     await Future.delayed(const Duration(seconds: 2));
 
     final prefs = await SharedPreferences.getInstance();
@@ -43,13 +34,11 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
 
     if (token != null && token.isNotEmpty) {
-      // TOKEN ADA → HOME
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen(token: token)),
       );
     } else {
-      // TOKEN TIDAK ADA → LOGIN
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -57,36 +46,23 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  // ============================================================
-  // BUILD
-  // ============================================================
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-
       body: SafeArea(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-
               children: [
-                // ==================================================
-                // LOGO
-                // ==================================================
                 Container(
                   width: 110,
                   height: 110,
-
                   decoration: BoxDecoration(
                     color: softBlueColor,
-
                     borderRadius: BorderRadius.circular(30),
-
                     boxShadow: [
                       BoxShadow(
                         color: primaryColor.withValues(alpha: 0.10),
@@ -95,7 +71,6 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                     ],
                   ),
-
                   child: const Icon(
                     Icons.location_on_rounded,
                     size: 58,
@@ -105,9 +80,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
                 const SizedBox(height: 28),
 
-                // ==================================================
-                // NAMA APLIKASI
-                // ==================================================
                 const Text(
                   'Field Survey',
                   style: TextStyle(
@@ -123,19 +95,14 @@ class _SplashScreenState extends State<SplashScreen> {
                 const Text(
                   'Kelola data survei lapangan dengan mudah',
                   textAlign: TextAlign.center,
-
                   style: TextStyle(fontSize: 14, color: secondaryTextColor),
                 ),
 
                 const SizedBox(height: 40),
 
-                // ==================================================
-                // LOADING
-                // ==================================================
                 const SizedBox(
                   width: 28,
                   height: 28,
-
                   child: CircularProgressIndicator(
                     color: primaryColor,
                     strokeWidth: 3,

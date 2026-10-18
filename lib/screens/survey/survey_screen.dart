@@ -15,21 +15,9 @@ class SurveyScreen extends StatefulWidget {
 }
 
 class _SurveyScreenState extends State<SurveyScreen> {
-  // ============================================================
-  // API
-  // ============================================================
-
   static const String apiUrl = 'https://sijala.biz.id/api/v1/surveys';
 
-  // ============================================================
-  // WARNA
-  // ============================================================
-
   static const Color primaryColor = Color(0xFF1E4BAF);
-
-  // ============================================================
-  // STATE
-  // ============================================================
 
   List<Map<String, dynamic>> surveys = [];
 
@@ -54,10 +42,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
   String? errorMessage;
 
-  // ============================================================
-  // INIT STATE
-  // ============================================================
-
   @override
   void initState() {
     super.initState();
@@ -70,10 +54,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
     searchController.dispose();
     super.dispose();
   }
-
-  // ============================================================
-  // AMBIL DATA SURVEY
-  // ============================================================
 
   Future<void> fetchSurveys() async {
     if (mounted) {
@@ -156,10 +136,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
     }
   }
 
-  // ============================================================
-  // TAMBAH SURVEY
-  // ============================================================
-
   Future<void> openAddSurvey() async {
     final result = await Navigator.push(
       context,
@@ -170,10 +146,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
       fetchSurveys();
     }
   }
-
-  // ============================================================
-  // BUKA DETAIL SURVEY
-  // ============================================================
 
   Future<void> openDetail(int surveyId) async {
     if (surveyId <= 0) {
@@ -188,15 +160,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
       ),
     );
 
-    // Refresh setelah kembali dari detail
     if (result == true && mounted) {
       fetchSurveys();
     }
   }
-
-  // ============================================================
-  // FORMAT TANGGAL
-  // ============================================================
 
   String formatDate(String? dateString) {
     if (dateString == null || dateString.isEmpty) {
@@ -214,10 +181,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
     }
   }
 
-  // ============================================================
-  // PESAN
-  // ============================================================
-
   void showMessage(String message, Color color) {
     if (!mounted) return;
 
@@ -230,18 +193,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
     );
   }
 
-  // ============================================================
-  // BUILD
-  // ============================================================
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-
-      // ========================================================
-      // APPBAR
-      // ========================================================
       appBar: AppBar(
         title: const Text('Daftar Survey'),
         centerTitle: true,
@@ -249,19 +204,11 @@ class _SurveyScreenState extends State<SurveyScreen> {
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-
-      // ========================================================
-      // BODY
-      // ========================================================
       body: RefreshIndicator(
         color: primaryColor,
         onRefresh: fetchSurveys,
         child: buildBody(),
       ),
-
-      // ========================================================
-      // BUTTON TAMBAH
-      // ========================================================
       floatingActionButton: FloatingActionButton.extended(
         onPressed: openAddSurvey,
         backgroundColor: primaryColor,
@@ -276,15 +223,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
     );
   }
 
-  // ============================================================
-  // BUILD BODY
-  // ============================================================
-
   Widget buildBody() {
-    // ==========================================================
-    // LOADING
-    // ==========================================================
-
     if (isLoading) {
       return const Center(
         child: Column(
@@ -300,10 +239,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
         ),
       );
     }
-
-    // ==========================================================
-    // ERROR
-    // ==========================================================
 
     if (errorMessage != null && surveys.isEmpty) {
       return ListView(
@@ -360,14 +295,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
         ],
       );
     }
-
-    // ==========================================================
-    // DATA KOSONG
-    // ==========================================================
-
-    // ==========================================================
-    // LIST SURVEY
-    // ==========================================================
 
     final filtered = filteredSurveys;
 
@@ -455,10 +382,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
         final survey = filtered[index - 1];
 
-        // ======================================================
-        // DATA API
-        // ======================================================
-
         final int id = int.tryParse(survey['id']?.toString() ?? '') ?? 0;
 
         final String title = survey['title']?.toString() ?? 'Tanpa Judul';
@@ -474,53 +397,34 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
         final String date = formatDate(survey['created_at']?.toString());
 
-        // ======================================================
-        // CARD
-        // ======================================================
-
         return Card(
           elevation: 0,
-
           margin: const EdgeInsets.only(bottom: 14),
-
           color: Colors.white,
-
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
             side: const BorderSide(color: Color(0xFFE2E8F0)),
           ),
-
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
-
             onTap: () {
               openDetail(id);
             },
-
             child: Padding(
               padding: const EdgeInsets.all(16),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-
                 children: [
-                  // ============================================
-                  // HEADER CARD
-                  // ============================================
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-
                     children: [
-                      // ICON
                       Container(
                         width: 50,
                         height: 50,
-
                         decoration: BoxDecoration(
                           color: const Color(0xFFEFF6FF),
                           borderRadius: BorderRadius.circular(12),
                         ),
-
                         child: const Icon(
                           Icons.assignment_outlined,
                           color: primaryColor,
@@ -529,19 +433,14 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
                       const SizedBox(width: 12),
 
-                      // INFORMASI
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-
                           children: [
                             Text(
                               title,
-
                               maxLines: 2,
-
                               overflow: TextOverflow.ellipsis,
-
                               style: const TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
@@ -556,15 +455,12 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                 horizontal: 10,
                                 vertical: 5,
                               ),
-
                               decoration: BoxDecoration(
                                 color: const Color(0xFFEFF6FF),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-
                               child: Text(
                                 categoryName,
-
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
@@ -578,19 +474,13 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     ],
                   ),
 
-                  // ============================================
-                  // DESKRIPSI
-                  // ============================================
                   if (description.isNotEmpty) ...[
                     const SizedBox(height: 14),
 
                     Text(
                       description,
-
                       maxLines: 2,
-
                       overflow: TextOverflow.ellipsis,
-
                       style: const TextStyle(
                         fontSize: 13,
                         height: 1.5,
@@ -605,9 +495,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
                   const SizedBox(height: 8),
 
-                  // ============================================
-                  // LOKASI
-                  // ============================================
                   Row(
                     children: [
                       const Icon(
@@ -623,11 +510,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
                           latitude.isNotEmpty && longitude.isNotEmpty
                               ? '$latitude, $longitude'
                               : 'Lokasi tidak tersedia',
-
                           maxLines: 1,
-
                           overflow: TextOverflow.ellipsis,
-
                           style: const TextStyle(
                             fontSize: 12,
                             color: Color(0xFF64748B),
@@ -639,9 +523,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
                   const SizedBox(height: 8),
 
-                  // ============================================
-                  // TANGGAL
-                  // ============================================
                   Row(
                     children: [
                       const Icon(
@@ -654,7 +535,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
                       Text(
                         date,
-
                         style: const TextStyle(
                           fontSize: 12,
                           color: Color(0xFF64748B),
